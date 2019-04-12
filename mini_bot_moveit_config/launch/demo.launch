@@ -54,6 +54,10 @@
     <arg name="moveit_warehouse_database_path" value="$(arg db_path)"/>
   </include>
 
+  <!-- Load Configuration file for RC Client -->
+  <rosparam file="$(find subscriber_mini_bot)/config/config.yaml" command="load" />
+
+  <!-- Run RC Client -->
   <node name="planned_path_subscriber" pkg="subscriber_mini_bot" type="planned_path_client" output="screen">
   </node>
 

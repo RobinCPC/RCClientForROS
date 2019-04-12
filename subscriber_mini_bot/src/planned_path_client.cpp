@@ -13,6 +13,18 @@ void SendMsgs();
 
 int main( int argc, char **argv )
 {
+  // Create ROS node first.
+  ros::init( argc, argv, "planned_path"  );
+
+  ros::NodeHandle n;
+
+  // load configuration (ip, prot, etc...)
+  std::string server_ip = "";
+  int server_port = 0;
+  n.param<std::string>("robot_ip", server_ip, "10.10.1.81");
+  n.param<int>("robot_port", server_port, 27015);
+
+
   //Creat client socket
   gSockfd = socket( AF_INET, SOCK_STREAM, 0 );
   if( gSockfd == -1 )
@@ -23,8 +35,11 @@ int main( int argc, char **argv )
   struct sockaddr_in *pClintInfo = &gClientInfo;
   bzero( pClintInfo, sizeof( struct sockaddr_in ) );
   pClintInfo->sin_family = PF_INET;
-  pClintInfo->sin_addr.s_addr = inet_addr("10.10.1.81");
-  pClintInfo->sin_port = htons( 27015 );
+  pClintInfo->sin_addr.s_addr = inet_addr(server_ip.c_str());
+  pClintInfo->sin_port = htons( server_port );
+
+  // Show config ip and port
+  ROS_INFO_STREAM("Current IP is " << server_ip << " and port is " << server_port);
 
   int err = connect( gSockfd, (struct sockaddr *)pClintInfo, sizeof( struct sockaddr_in ) );
   if( err == -1 )
@@ -35,10 +50,6 @@ int main( int argc, char **argv )
   {
       printf( "\nConnection success.\n\n" );
   }
-
-  ros::init( argc, argv, "planned_path"  );
-
-  ros::NodeHandle n;
 
   ROSJointParam_T *pJointParam = &gROSData.jointParam;
   GetJointParam( n, pJointParam );
