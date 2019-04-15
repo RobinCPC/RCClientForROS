@@ -1,0 +1,21 @@
+<launch>
+    <arg name="model" default="$(find mini_bot)/urdf/mini_bot.urdf.xacro"/>
+    <arg name="gui" default="true" />
+    <arg name="rvizconfig" default="$(find mini_bot)/rviz/urdf.rviz" />
+
+    <param name="robot_description"
+        command="$(find xacro)/xacro --inorder $(arg model)" />
+
+    <!-- send fake joint values -->
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+        <param name="use_gui" value="$(arg gui)"/>
+    </node>
+
+    <!-- Combine joint values -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"/>
+
+    <!-- Show in Rviz   -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)"/>
+
+</launch>
+

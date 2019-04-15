@@ -1,0 +1,246 @@
+<?xml version="1.0"?>
+<!-- NexCOBOT MiniBOT -->
+<robot name="mini_bot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Constants for robot dimensions -->
+  <xacro:property name="PI" value="3.1415926535897931"/>
+  <xacro:property name="deg" value="0.017453293"/> <!-- Degrees to Radians -->
+  <xacro:property name="mass0" value="3.0361"/> <!-- assumption value for mass -->
+  <xacro:property name="mass1" value="1.8294"/> <!-- assumption value for mass -->
+  <xacro:property name="mass2" value="1.199"/> <!-- assumption value for mass -->
+  <xacro:property name="mass3" value="0.41277"/> <!-- assumption value for mass -->
+  <xacro:property name="mass4" value="0.34299"/> <!-- assumption value for mass -->
+  <xacro:property name="mass5" value="0.24686"/> <!-- assumption value for mass -->
+  <xacro:property name="mass6" value="0.024508"/> <!-- assumption value for mass -->
+
+  <link name="base_link">
+    <inertial>
+      <origin xyz="-0.0209 0.014014 0.10674" rpy="0 0 0" />
+      <mass value="${mass0}" />
+      <inertia
+        ixx="0.029082" ixy="0.00017866" ixz="-0.00069921"
+        iyy="0.034115" iyz="-2.7854E-05"
+        izz="0.024101" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://mini_bot/meshes/base_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://mini_bot/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="A1_Link">
+    <inertial>
+      <origin xyz="0.00013196 -0.0051908 -0.026476" rpy="0 0 0" />
+      <mass value="${mass1}" />
+      <inertia
+        ixx="0.012589" ixy="1.9683E-05" ixz="1.2814E-05"
+        iyy="0.0065171" iyz="-0.00097038"
+        izz="0.010664" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://mini_bot/meshes/A1_Link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://mini_bot/meshes/A1_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="Joint1" type="revolute">
+    <origin xyz="0 0 0.339" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="A1_Link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-2.617993878" upper="3.019419606" effort="0" velocity="0" />
+  </joint>
+
+  <link name="A2_Link">
+    <inertial>
+      <origin xyz="0.20665 0.00010564 0.010623" rpy="0 0 0" />
+      <mass value="${mass2}" />
+      <inertia
+        ixx="0.0082944" ixy="3.8291E-06" ixz="0.0043024"
+        iyy="0.015732" iyz="-8.8505E-06"
+        izz="0.0085276" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://mini_bot/meshes/A2_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://mini_bot/meshes/A2_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="Joint2" type="revolute">
+    <origin xyz="0 0 0" rpy="1.5708 -1.5708 0" />
+    <parent link="A1_Link" />
+    <child link="A2_Link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.6057029118" upper="1.9198621772" effort="0" velocity="0" />
+  </joint>
+
+  <link name="A3_Link">
+    <inertial>
+      <origin xyz="0.059711 -0.045937 0.026993" rpy="0 0 0" />
+      <mass value="${mass3}" />
+      <inertia
+        ixx="0.0012728" ixy="0.00014125" ixz="0.00020523"
+        iyy="0.00091925" iyz="-1.0099E-05"
+        izz="0.001128" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://mini_bot/meshes/A3_Link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://mini_bot/meshes/A3_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="Joint3" type="revolute">
+    <origin xyz="0.25 0 0" rpy="-2.2725E-16 -5.2703E-15 1.4452E-30" />
+    <parent link="A2_Link" />
+    <child link="A3_Link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.0821041362" upper="2.5307274154" effort="0" velocity="0" />
+  </joint>
+
+  <link name="A4_Link">
+    <inertial>
+      <origin xyz="0.00042233 -0.079522 -0.032498" rpy="0 0 0" />
+      <mass value="${mass4}" />
+      <inertia
+        ixx="0.001756" ixy="-5.3895E-06" ixz="3.2318E-06"
+        iyy="0.001026" iyz="0.00055859"
+        izz="0.00089914" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://mini_bot/meshes/A4_Link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://mini_bot/meshes/A4_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="Joint4" type="revolute">
+    <origin xyz="0.07 -0.25 0" rpy="1.5708 3.1178E-08 -6.8815E-16" />
+    <parent link="A3_Link" />
+    <child link="A4_Link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-2.0943951024" upper="3.0805061298" effort="0" velocity="0" />
+  </joint>
+
+  <link name="A5_Link">
+    <inertial>
+      <origin xyz="0.00046447 -0.023653 -0.0050734" rpy="0 0 0" />
+      <mass value="${mass5}" />
+      <inertia
+        ixx="0.00038298" ixy="3.7652E-06" ixz="2.2688E-06"
+        iyy="0.00010941" iyz="-1.3541E-05"
+        izz="0.00036694" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://mini_bot/meshes/A5_Link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://mini_bot/meshes/A5_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="Joint5" type="revolute">
+    <origin xyz="0 0 0" rpy="-1.5708 -1.6127E-15 0" />
+    <parent link="A4_Link" />
+    <child link="A5_Link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.8325957146" upper="1.8325957146" effort="0" velocity="0" />
+  </joint>
+
+  <link name="A6_Link">
+    <inertial>
+      <origin xyz="0.00014188 -5.3914E-05 -0.0038782" rpy="0 0 0" />
+      <mass value="${mass6}" />
+      <inertia
+        ixx="4.4973E-06" ixy="6.675E-10" ixz="-3.4479E-09"
+        iyy="4.4429E-06" iyz="1.4991E-09"
+        izz="8.2691E-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://mini_bot/meshes/A6_Link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://mini_bot/meshes/A6_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="Joint6" type="continuous">
+    <origin xyz="0 -0.095 0" rpy="1.5708 -3.1178E-08 6.6325E-13" />
+    <parent link="A5_Link" />
+    <child link="A6_Link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.1415926536" upper="3.1415926536" effort="0" velocity="0" />
+  </joint>
+</robot>
