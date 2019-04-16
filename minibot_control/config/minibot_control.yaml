@@ -1,0 +1,71 @@
+minibot:
+    # Publish all joint states -----------------------------------
+    joint_state_controller:
+        type: joint_state_controller/JointStateController
+        publish_rate: 50
+
+    # Arm Position controller -----------------------------------
+    arm_controller:
+        type: "position_controllers/JointTrajectoryController"
+        joints:
+            - Joint1
+            - Joint2
+            - Joint3
+            - Joint4
+            - Joint5
+            - Joint6
+        gains:
+            Joint1: {p: 100.0, i: 0.01, d: 10.0}
+            Joint2: {p: 100.0, i: 0.01, d: 10.0}
+            Joint3: {p: 100.0, i: 0.01, d: 10.0}
+            Joint4: {p: 100.0, i: 0.01, d: 10.0}
+            Joint5: {p: 100.0, i: 0.01, d: 10.0}
+            Joint6: {p: 100.0, i: 0.01, d: 10.0}
+
+    # Individual Position Controllers ---------------------------------------
+    # Allow to send individual ROS msg of Float64 to each joint
+    joint1_position_controller:
+        type: position_controllers/JointPositionController
+        joint: Joint1
+        pid: {p: 100.0, i: 0.01, d: 10.0}
+    joint2_position_controller:
+        type: position_controllers/JointPositionController
+        joint: Joint2
+        pid: {p: 100.0, i: 0.01, d: 10.0}
+    joint3_position_controller:
+        type: position_controllers/JointPositionController
+        joint: Joint3
+        pid: {p: 100.0, i: 0.01, d: 10.0}
+    joint4_position_controller:
+        type: position_controllers/JointPositionController
+        joint: Joint4
+        pid: {p: 100.0, i: 0.01, d: 10.0}
+    joint5_position_controller:
+        type: position_controllers/JointPositionController
+        joint: Joint5
+        pid: {p: 100.0, i: 0.01, d: 10.0}
+    joint6_position_controller:
+        type: position_controllers/JointPositionController
+        joint: Joint6
+        pid: {p: 100.0, i: 0.01, d: 10.0}
+
+    # Group Position Controllers --------------------------------------------
+    # Allow to send single ROS msg of Float64MutiArray to all joints
+    joint_position_controller:
+        type: position_controllers/JointGroupPositionController
+        joints:
+            - Joint1
+            - Joint2
+            - Joint3
+            - Joint4
+            - Joint5
+            - Joint6
+        gains:
+            Joint1: {p: 100.0, i: 0.01, d: 10.0}
+            Joint2: {p: 100.0, i: 0.01, d: 10.0}
+            Joint3: {p: 100.0, i: 0.01, d: 10.0}
+            Joint4: {p: 100.0, i: 0.01, d: 10.0}
+            Joint5: {p: 100.0, i: 0.01, d: 10.0}
+            Joint6: {p: 100.0, i: 0.01, d: 10.0}
+
+

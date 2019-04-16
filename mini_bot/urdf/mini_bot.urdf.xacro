@@ -271,7 +271,7 @@
     </joint>
     <actuator name="motor_1">
       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
+      <mechanicalReduction>33</mechanicalReduction>
     </actuator>
   </transmission>
 
@@ -282,7 +282,7 @@
     </joint>
     <actuator name="motor_2">
       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
+      <mechanicalReduction>33</mechanicalReduction>
     </actuator>
   </transmission>
 
@@ -293,7 +293,7 @@
     </joint>
     <actuator name="motor_3">
       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
+      <mechanicalReduction>33</mechanicalReduction>
     </actuator>
   </transmission>
 
@@ -304,7 +304,7 @@
     </joint>
     <actuator name="motor_4">
       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
+      <mechanicalReduction>25</mechanicalReduction>
     </actuator>
   </transmission>
 
@@ -315,7 +315,7 @@
     </joint>
     <actuator name="motor_5">
       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
+      <mechanicalReduction>20</mechanicalReduction>
     </actuator>
   </transmission>
 
@@ -326,7 +326,7 @@
     </joint>
     <actuator name="motor_6">
       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
+      <mechanicalReduction>10</mechanicalReduction>
     </actuator>
   </transmission>
 
