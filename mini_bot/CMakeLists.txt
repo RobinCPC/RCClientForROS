@@ -183,6 +183,16 @@ include_directories(
 #   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 # )
 
+## Mark other folders (e.g. launch and world folder)
+install(DIRECTORY 
+  config
+  launch
+  meshes
+  rviz
+  urdf
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+
 #############
 ## Testing ##
 #############

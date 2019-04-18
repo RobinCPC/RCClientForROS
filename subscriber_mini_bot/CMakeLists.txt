@@ -134,6 +134,7 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/subscriber_mini_bot_node.cpp)
+add_executable(planned_path_client src/planned_path_client.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -149,6 +150,7 @@ include_directories(
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
+target_link_libraries(planned_path_client ${catkin_LIBRARIES})
 
 #############
 ## Install ##
@@ -170,6 +172,9 @@ include_directories(
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
+install(TARGETS planned_path_client
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 ## Mark cpp header files for installation
 # install(DIRECTORY include/${PROJECT_NAME}/
@@ -185,6 +190,12 @@ include_directories(
 #   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 # )
 
+## Mark other folders (e.g. launch and world folder)
+install(DIRECTORY 
+  config
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+
 #############
 ## Testing ##
 #############
@@ -197,7 +208,4 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-
-add_executable(planned_path_client src/planned_path_client.cpp)
-target_link_libraries(planned_path_client ${catkin_LIBRARIES})
 

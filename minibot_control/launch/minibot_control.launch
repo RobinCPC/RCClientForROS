@@ -25,8 +25,8 @@
     </node>
 
     <!-- experiment to control as group, not working now
-    <node name="simple_mover" pkg="minibot_control" type="simple_mover"/>
     -->
+    <node name="simple_mover" pkg="minibot_control" type="simple_mover"/>
 
 </launch>
 
