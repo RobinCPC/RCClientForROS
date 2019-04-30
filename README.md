@@ -10,3 +10,7 @@ roslaunch minibot_control minibot_control.launch
 # a function publish joint control message
 rosrun minibot_control simple_mover
 ```
+
+### TODO:
+* Check the range and direction of joint (J2 - 5)
+

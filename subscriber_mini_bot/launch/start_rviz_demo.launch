@@ -1,0 +1,20 @@
+<launch>
+  <!-- Set up ROS arguments and parameters -->
+  <arg name="model" default="$(find mini_bot)/urdf/mini_bot.urdf.xacro" />
+  <arg name="gui" default="true" />
+  <arg name="rvizconfig" default="$(find mini_bot)/rviz/urdf.rviz" />
+
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg model)" />
+
+  <!-- Load Configuration file for RC Client -->
+  <rosparam file="$(find subscriber_mini_bot)/config/config.yaml" command="load" />
+
+  <!-- Run RC Client -->
+  <node name="planned_path_subscriber" pkg="subscriber_mini_bot" type="planned_path_client" output="screen" />
+
+  <!-- Start Robot State Publisher -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+
+  <!-- Start RViz -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+</launch>

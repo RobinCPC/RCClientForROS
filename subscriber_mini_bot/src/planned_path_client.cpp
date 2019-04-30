@@ -1,11 +1,15 @@
 #include "planned_path_client.h"
 
+
 using namespace std;
 
 //Grobal parameter
 ROSData_T          gROSData;
 I32_T              gSockfd;
 struct sockaddr_in gClientInfo;
+
+std::mutex gMutex;
+void robotStatePublishWorker(ros::NodeHandle& nh, int rate);
 
 
 void SendMsgs();
@@ -57,6 +61,8 @@ int main( int argc, char **argv )
   ros::Subscriber motionReq   = n.subscribe( "/move_group/motion_plan_request", 10000, SubscribeVelAccScale );
 
   ros::Subscriber plannedPath = n.subscribe( "/move_group/display_planned_path", 10000, SubscribePath );
+
+  std::thread robotStatePublishThread(robotStatePublishWorker, std::ref(n), 50);
 
   ros::spin();
 
@@ -191,4 +197,62 @@ void SendMsgs()
   
   if( ret != -1 )
     ROS_INFO("Mini Bot motion success!!\n");
+}
+
+void robotStatePublishWorker(ros::NodeHandle& nh, int rate)
+{
+    ros::Publisher jointPublisher = nh.advertise<sensor_msgs::JointState>("joint_states", rate);
+    ros::Rate sleeper = ros::Rate(rate);
+    RCPackage_T pkg;
+
+    while(ros::ok())
+    {
+        // Critical Section
+        std::lock_guard<std::mutex> mLock(gMutex);
+
+        // Ask server to get current joint position
+        pkg.cmd = RCSVR_CMD_GET_ACTUAL_POS;
+        pkg.pointData.index = 0;
+        send( gSockfd, &pkg, sizeof( RCPackage_T), 0);
+        I32_T ret = recv( gSockfd, &pkg, sizeof( RCPackage_T ), 0);
+
+        if( ret != -1 && pkg.cmd == RCSVR_CMD_SEND_ACTUAL_POS )
+        {
+            ROS_DEBUG("MiniBOT send actual joint values!\n");
+            std::string tmp = "";
+            for(int i=0; i < 6; ++i)
+            {
+                tmp += std::to_string(pkg.pointData.data[i]) + " ";
+            }
+            ROS_DEBUG_STREAM(tmp);
+            pkg.pointData.data[1] -= 90.0;
+        }
+        else
+        {
+            ROS_INFO("MiniBOT fail to send !\n");
+            sleep(1);
+            continue;
+        }
+
+        std::vector<std::string> jointNames = {"Joint1", "Joint2", "Joint3", "Joint4", "Joint5", "Joint6"};
+        //publish joint state
+        sensor_msgs::JointState jointStateMsg;
+        jointStateMsg.header.stamp = ros::Time::now();
+        jointStateMsg.header.frame_id = "base_link";
+        jointStateMsg.name = jointNames;
+        std::vector<double> jointVals = {pkg.pointData.data[0] * DegreeToRadian,
+                                         pkg.pointData.data[1] * DegreeToRadian,
+                                         pkg.pointData.data[2] * DegreeToRadian,
+                                         pkg.pointData.data[3] * DegreeToRadian,
+                                         pkg.pointData.data[4] * DegreeToRadian,
+                                         pkg.pointData.data[5] * DegreeToRadian,
+                                        };
+        jointStateMsg.position = jointVals;
+
+        jointPublisher.publish(jointStateMsg);
+        sleeper.sleep();
+
+    }
+
+    return;
 }

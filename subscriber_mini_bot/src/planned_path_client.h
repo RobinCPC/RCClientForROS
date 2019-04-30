@@ -1,3 +1,4 @@
+// include header from C++ std library
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,16 +7,23 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <fstream>
+#include <iostream>
+#include <vector>
+#include <thread>
+#include <mutex>
+
+// include header from ROS library
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include "trajectory_msgs/JointTrajectoryPoint.h"
 #include <moveit_msgs/DisplayTrajectory.h>
 #include <moveit_msgs/MotionPlanRequest.h>
-#include <fstream>
-#include <iostream>
+#include <sensor_msgs/JointState.h>
 
 
 #define MINIBOTAXES    6
+#define DegreeToRadian 0.017453292519943
 
 //Nex type
 typedef int      I32_T;
@@ -29,6 +37,8 @@ typedef int      BOOL_T;
 #define RCSVR_CMD_MOTION_DONE       ( 0x3 )
 #define RCSVR_CMD_SET_PARAMETER_VEL ( 0x4 )
 #define RCSVR_CMD_SET_PARAMETER_ACC ( 0x5 )
+#define RCSVR_CMD_GET_ACTUAL_POS    ( 0x6 )
+#define RCSVR_CMD_SEND_ACTUAL_POS   ( 0x7 )
 
 //package
 #define MAX_POINT_DATA_SIZE (8)

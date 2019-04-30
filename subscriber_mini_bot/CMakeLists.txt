@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(subscriber_mini_bot)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -15,7 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
-
+find_package(Threads REQUIRED)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -150,7 +150,7 @@ add_executable(planned_path_client src/planned_path_client.cpp)
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
-target_link_libraries(planned_path_client ${catkin_LIBRARIES})
+target_link_libraries(planned_path_client ${catkin_LIBRARIES} Threads::Threads)
 
 #############
 ## Install ##
