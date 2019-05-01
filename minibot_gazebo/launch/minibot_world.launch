@@ -1,4 +1,11 @@
 <launch>
+    <!-- Load Gazebo ROS control configurations from YAML file to parameter server
+    Note: still need debug BUT not needed for current usage. Without this, will throw
+    Error message like: No p gains specified for pids. more detail:
+    https://answers.ros.org/question/293830/what-is-the-fix-for-no-p-gain-specified-for-pid-namespace-gazebo_ros_controlpid_gainsback_right_wheel_joint-ros-melodic/
+    <rosparam file="$(find minibot_gazebo)/config/gazebo_ros_control_params.yaml" command="load"/>
+    -->
+
     <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
         <arg name="world_name" value="$(find minibot_gazebo)/world/minibot.world"/>

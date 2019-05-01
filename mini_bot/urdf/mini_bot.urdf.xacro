@@ -267,7 +267,7 @@
     <dynamics damping="0.7"/>
   </joint>
 
-  <!--  TODO: Update real gear ratio -->
+  <!--  Transmission Setup for Gazebo Control  -->
   <transmission name="tran1">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="Joint1">

@@ -1,0 +1,10 @@
+# parameters for Gazebo ROS control plugin
+# Note: Optional parameters. Will not affect current usage.
+gazebo_ros_control/pid_gains:
+    Joint1: {p: 100.0, i: 0.01, d: 10.0}
+    Joint2: {p: 100.0, i: 0.01, d: 10.0}
+    Joint3: {p: 100.0, i: 0.01, d: 10.0}
+    Joint4: {p: 100.0, i: 0.01, d: 10.0}
+    Joint5: {p: 100.0, i: 0.01, d: 10.0}
+    Joint6: {p: 100.0, i: 0.01, d: 10.0}
+
