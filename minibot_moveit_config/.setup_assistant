@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: minibot_support
+    relative_path: urdf/minibot.urdf.xacro
+    xacro_args: "--inorder "
+  SRDF:
+    relative_path: config/minibot.srdf
+  CONFIG:
+    author_name: Robin Chen
+    author_email: robinchen@nexcobot.com
+    generated_timestamp: 1556850976
