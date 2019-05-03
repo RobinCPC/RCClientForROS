@@ -230,7 +230,7 @@ void robotStatePublishWorker(ros::NodeHandle& nh, int rate)
         else
         {
             ROS_INFO("MiniBOT fail to send !\n");
-            sleep(1);
+            //sleeper.sleep();
             continue;
         }
 
