@@ -23,7 +23,7 @@ void send_command(ros::Publisher& pub, ros::Rate& r)
   const double deg = 0.017453293;
   std::vector<double> jnt_vals = {0., 0., 0., 0., -90*deg, 0.}; // home position
   std::vector<std::vector<double>> jnt_arr = {};
-  jnt_arr.push_back(jnt_vals);
+  //jnt_arr.push_back(jnt_vals);
   // move through 4 points
   jnt_arr.push_back({-21.841*deg, (85.523 - 90)*deg, 5.052*deg, 0.149*deg, -90.203*deg, -21.836*deg});
   jnt_arr.push_back({21.841*deg, (85.523 - 90)*deg, 5.052*deg, -0.149*deg, -90.203*deg, 21.841*deg});
@@ -39,7 +39,7 @@ void send_command(ros::Publisher& pub, ros::Rate& r)
   int iter = 0;
   while(ros::ok())
   {
-    iter %= 5;
+    iter %= jnt_arr.size();
     jnt_vals = jnt_arr[iter];
     //copy in the data
     ROS_INFO_STREAM("Command joint values:");
@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
   // initialize
   ros::init(argc, argv, "simple_mover");
   ros::NodeHandle nh;
-  ros::Rate rate = ros::Rate(0.5);
+  ros::Rate rate = ros::Rate(0.25);
 
   ros::Publisher pub_group = nh.advertise<std_msgs::Float64MultiArray>
     ("/minibot/joint_position_controller/command",  5);

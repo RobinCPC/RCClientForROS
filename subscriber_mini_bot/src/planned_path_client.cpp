@@ -1,4 +1,5 @@
 #include "planned_path_client.h"
+#include "std_msgs/Float64MultiArray.h"
 
 
 using namespace std;
@@ -10,6 +11,7 @@ struct sockaddr_in gClientInfo;
 
 std::mutex gMutex;
 void robotStatePublishWorker(ros::NodeHandle& nh, int rate);
+void jnt_cmd_callback(const std_msgs::Float64MultiArray& msg);
 
 
 void SendMsgs();
@@ -25,8 +27,10 @@ int main( int argc, char **argv )
   // load configuration (ip, prot, etc...)
   std::string server_ip = "";
   int server_port = 0;
+  bool get_jnt_cmd = false;
   n.param<std::string>("robot_ip", server_ip, "10.10.1.81");
   n.param<int>("robot_port", server_port, 27015);
+  n.param<bool>("accept_joint_command", get_jnt_cmd, false);
 
 
   //Creat client socket
@@ -61,6 +65,13 @@ int main( int argc, char **argv )
   ros::Subscriber motionReq   = n.subscribe( "/move_group/motion_plan_request", 10000, SubscribeVelAccScale );
 
   ros::Subscriber plannedPath = n.subscribe( "/move_group/display_planned_path", 10000, SubscribePath );
+
+  ros::Subscriber jntSub;
+  if(get_jnt_cmd)
+  {
+    ROS_INFO_STREAM("Start to subscribe joint command!");
+    jntSub = n.subscribe( "/minibot/joint_position_controller/command", 5, jnt_cmd_callback);
+  }
 
   std::thread robotStatePublishThread(robotStatePublishWorker, std::ref(n), 50);
 
@@ -122,6 +133,7 @@ void SubscribePath( const moveit_msgs::DisplayTrajectory::ConstPtr &PMsg )
   I32_T      totalPoint = PMsg->trajectory[0].joint_trajectory.points.size();
   pROSData->totalPoint  = totalPoint;
 
+  ROS_INFO( "<------------------- MiniBOT Received trajectory command! ------------------>");
   ROSPath_T *pPath;
   pPath = ( ROSPath_T * )malloc( sizeof( ROSPath_T ) * totalPoint );
   for( I32_T pointIndex = 0; pointIndex < totalPoint; pointIndex++ )
@@ -146,6 +158,8 @@ void SendMsgs()
   ROSData_T   *pROSData = &gROSData;
   RCPackage_T  pkg;
 
+  //ROS_INFO( "<------------------- MiniBOT Prepare to send  trajectory command! ------------------>");
+
   //Transfer the velocity limits
   pkg.cmd = RCSVR_CMD_SET_PARAMETER_VEL;
   pkg.pointData.data[0] = pROSData->speedRatio.velRatio;
@@ -156,6 +170,7 @@ void SendMsgs()
   pkg.pointData.data[5] = pROSData->jointParam.velLimit[4];
   pkg.pointData.data[6] = pROSData->jointParam.velLimit[5];
 
+  ROS_INFO( "<------------------- MiniBOT send vel command! ------------------>");
   send( gSockfd, &pkg, sizeof( RCPackage_T ), 0 );
 
   //Transfer the acceleration limits
@@ -168,12 +183,14 @@ void SendMsgs()
   pkg.pointData.data[5] = pROSData->jointParam.accLimit[4];
   pkg.pointData.data[6] = pROSData->jointParam.accLimit[5];
 
+  ROS_INFO( "<------------------- MiniBOT send acc command! ------------------>");
   send( gSockfd, &pkg, sizeof( RCPackage_T ), 0 );
 
   //Transfer the number of total points
   pkg.cmd = RCSVR_CMD_SAVE_TOTAL_POINT;
   pkg.pointData.index = pROSData->totalPoint;
 
+  ROS_INFO( "<------------------- MiniBOT send totalPoint command! ------------------>");
   send( gSockfd, &pkg, sizeof( RCPackage_T ), 0 );
 
   //Transfer the data of path
@@ -188,12 +205,15 @@ void SendMsgs()
     pkg.pointData.data[4] = pROSData->pPathData[pointIndex].points[4];
     pkg.pointData.data[5] = pROSData->pPathData[pointIndex].points[5];
 
+    ROS_INFO( "<------------------- MiniBOT Prepare to run trajectory command! ------------------>");
     send( gSockfd, &pkg, sizeof( RCPackage_T ), 0 );
-    sleep( 0.1 );
+    sleep( 0.01 );
   }
 
   I32_T ret;
+  ROS_INFO( "<------------------- MiniBOT wait command! ------------------>");
   ret = recv( gSockfd, &pkg, sizeof( RCPackage_T ), 0 );
+  ROS_INFO( "<------------------- MiniBOT get command! ------------------>");
   
   if( ret != -1 )
     ROS_INFO("Mini Bot motion success!!\n");
@@ -229,7 +249,7 @@ void robotStatePublishWorker(ros::NodeHandle& nh, int rate)
         }
         else
         {
-            ROS_INFO("MiniBOT fail to send !\n");
+            ROS_DEBUG("MiniBOT fail to send !\n");
             //sleeper.sleep();
             continue;
         }
@@ -255,4 +275,37 @@ void robotStatePublishWorker(ros::NodeHandle& nh, int rate)
     }
 
     return;
+}
+
+
+void jnt_cmd_callback(const std_msgs::Float64MultiArray& msg)
+{
+  ROS_INFO( "<------------------- MiniBOT Received trajectory command! ------------------>\n");
+  //ROS_INFO_STREAM("Received msg:" << msg);
+
+  ROSData_T *pROSData   = &gROSData;
+
+  // Setting speed ratio manually
+  pROSData->speedRatio.velRatio = 0.8;
+  pROSData->speedRatio.accRatio = 0.8;
+
+  // Put joint command message into PathData Structure
+  I32_T      totalPoint = msg.layout.dim.size();
+  pROSData->totalPoint  = totalPoint;
+  ROSPath_T *pPath;
+  pPath = ( ROSPath_T * )malloc( sizeof( ROSPath_T ) * totalPoint );
+  for( I32_T pointIndex = 0; pointIndex < totalPoint; pointIndex++ )
+  {
+    for(int i = 0; i < msg.layout.dim[0].size; ++i)
+    {
+      pPath[pointIndex].points[i] = msg.data[i];
+    }
+  }
+
+  pROSData->pPathData = pPath;
+
+  SendMsgs();
+
+  free( pPath );
+  return;
 }
