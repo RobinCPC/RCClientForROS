@@ -4,6 +4,6 @@
 
 # Connection  configuration - robot ip and port
 
-robot_ip : "192.168.0.93"
+robot_ip : "192.168.88.100"
 robot_port : 1688
 accept_joint_command : true

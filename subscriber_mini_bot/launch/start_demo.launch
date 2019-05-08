@@ -1,0 +1,24 @@
+<launch>
+  <!-- Set up ROS arguments and parameters -->
+  <arg name="model" default="$(find minibot_support)/urdf/minibot.urdf.xacro" />
+  <arg name="gui" default="true" />
+  <arg name="rvizconfig" default="$(find minibot_support)/rviz/urdf.rviz" />
+
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg model)" />
+
+  <!-- Load Configuration file for RC Client -->
+  <rosparam file="$(find subscriber_mini_bot)/config/config.yaml" command="load" />
+
+  <rosparam file="$(find minibot_moveit_config)/config/joint_limits.yaml" command="load" 
+      ns="/robot_description_planning"/>
+
+  <!-- Run RC Client -->  
+  <node name="planned_path_subscriber" pkg="subscriber_mini_bot" type="planned_path_client" output="screen" />
+
+  <!-- Start Robot State Publisher -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+
+  <!-- Start RViz   NOTE: in RoboMaker, can not call rviz directly for a robot application.
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+  -->
+</launch>

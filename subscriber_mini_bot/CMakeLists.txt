@@ -193,6 +193,7 @@ install(TARGETS planned_path_client
 ## Mark other folders (e.g. launch and world folder)
 install(DIRECTORY 
   config
+  launch
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
