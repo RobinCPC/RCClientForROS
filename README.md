@@ -7,8 +7,6 @@ MiniBOT Remote Control Client for ROS
 roslaunch minibot_gazebo minibot_world.launch
 # Connect with ros control
 roslaunch minibot_control minibot_control.launch
-# a function publish joint control message
-rosrun minibot_control simple_mover
 ```
 
 ## To operate real MiniBOT, run the following command in order

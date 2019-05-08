@@ -24,8 +24,7 @@
         <remap from="/joint_states" to="/minibot/joint_states" />
     </node>
 
-    <!-- experiment to control as group, not working now
-    -->
+    <!-- experiment to control as group -->
     <node name="simple_mover" pkg="minibot_control" type="simple_mover"/>
 
 </launch>
