@@ -17,6 +17,12 @@ roslaunch subscriber_mini_bot start_rviz_demo.launch
 rosrun minibot_control simple_mover
 ```
 
+## To simulate MiniBOT in Gazebo with Moveit!
+``` bash
+roslaunch minibot_control simulate_with_moveit.launch
+```
+
 ### TODO:
 * Check the range and direction of joint (J2 - 5)
+* Update urdf mesh models
 
