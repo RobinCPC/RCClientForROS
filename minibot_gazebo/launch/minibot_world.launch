@@ -13,7 +13,7 @@
     </include>
 
     <!-- Convert an xacro and put on parameter server -->
-    <param name="robot_description" command="$(find xacro)/xacro --inorder $(find mini_bot)/urdf/mini_bot.urdf.xacro" />
+    <param name="robot_description" command="$(find xacro)/xacro --inorder $(find minibot_support)/urdf/minibot.urdf.xacro" />
     <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -z 1 -model minibot" />
 
 </launch>
