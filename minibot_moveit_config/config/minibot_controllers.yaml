@@ -1,0 +1,13 @@
+# This parameters for moveit with Gazebo
+controller_list:
+    - name: minibot/arm_controller
+      action_ns: follow_joint_trajectory
+      type: FollowJointTrajectory
+      default: true
+      joints:
+        - Joint1
+        - Joint2
+        - Joint3
+        - Joint4
+        - Joint5
+        - Joint6

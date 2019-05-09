@@ -1,0 +1,68 @@
+<launch>
+    <!-- reference: https://erdalpekel.de/?p=55
+    https://github.com/erdalpekel/panda_simulation/blob/master/launch/simulation.launch
+    -->
+    <param name="robot_description" command="$(find xacro)/xacro --inorder $(find minibot_support)/urdf/minibot.urdf.xacro" />
+
+    <!-- GAZEBO arguments -->
+    <arg name="paused" default="false"/>
+    <arg name="use_sim_time" default="true"/>
+    <arg name="gui" default="true"/>
+    <arg name="headless" default="false"/>
+    <arg name="debug" default="false"/>
+
+    <!--launch GAZEBO with own world configuration -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="debug" value="$(arg debug)"/>
+        <arg name="gui" value="$(arg gui)"/>
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+        <arg name="headless" value="$(arg headless)"/>
+    </include>
+
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model minibot"/>
+
+    <!-- Load joint controller configurations from YAML file to parameter server -->
+    <rosparam file="$(find minibot_control)/config/minibot_control.yaml" command="load"/>
+
+    <!-- load the controllers -->
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+        output="screen" ns="/minibot" args="joint_state_controller arm_controller" />
+
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" >
+        <remap from="/joint_states" to="/minibot/joint_states" />
+    </node>
+
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+        <param name="/use_gui" value="false"/>
+        <rosparam param="/source_list">[/minibot/joint_states]</rosparam>
+    </node>
+
+
+    <include file="$(find minibot_moveit_config)/launch/planning_context.launch">
+        <arg name="load_robot_description" value="true"/>
+    </include>
+
+    <!--
+        # The planning and execution components of MoveIt! configured to
+        # publish the current configuration of the robot (simulated or real)
+        # and the current state of the world as seen by the planner
+    -->
+    <include file="$(find minibot_moveit_config)/launch/move_group.launch">
+        <arg name="publish_monitored_planning_scene" value="true" />
+    </include>
+
+    <!--
+        # The visualization component of MoveIt!
+    -->
+    <include file="$(find minibot_moveit_config)/launch/moveit_rviz.launch">
+        <arg name="config" value="true" />
+    </include>
+
+    <!--
+    <include file="$(find minibot_moveit_config)/launch/move_group.launch" />
+    <include file="$(find minibot_moveit_config)/launch/moveit_rviz.launch" />
+
+    <node name="joint_state_desired_publisher" pkg="topic_tools" type="relay" args="joint_states joint_states_desired" />
+    -->
+</launch>

@@ -21,6 +21,46 @@ minibot:
             Joint4: {p: 100.0, i: 0.01, d: 10.0}
             Joint5: {p: 100.0, i: 0.01, d: 10.0}
             Joint6: {p: 100.0, i: 0.01, d: 10.0}
+        constraints:
+            goal_time: 4.0                   # Override default
+            stopped_velocity_tolerance: 0.5  # Override default
+            Joint1:
+                trajectory: 1.00             # Not enforced if unspecified
+                goal: 0.50                   # Not enforced if unspecified
+            Joint2:
+                trajectory: 1.00             # Not enforced if unspecified
+                goal: 0.50                   # Not enforced if unspecified
+            Joint3:
+                trajectory: 1.00             # Not enforced if unspecified
+                goal: 0.50                   # Not enforced if unspecified
+            Joint4:
+                trajectory: 1.00             # Not enforced if unspecified
+                goal: 0.50                   # Not enforced if unspecified
+            Joint5:
+                trajectory: 1.00             # Not enforced if unspecified
+                goal: 0.50                   # Not enforced if unspecified
+            Joint6:
+                trajectory: 1.00             # Not enforced if unspecified
+                goal: 0.50                   # Not enforced if unspecified
+
+    # Group Position Controllers --------------------------------------------
+    # Allow to send single ROS msg of Float64MutiArray to all joints
+    joint_position_controller:
+        type: position_controllers/JointGroupPositionController
+        joints:
+            - Joint1
+            - Joint2
+            - Joint3
+            - Joint4
+            - Joint5
+            - Joint6
+        gains:
+            Joint1: {p: 100.0, i: 0.01, d: 10.0}
+            Joint2: {p: 100.0, i: 0.01, d: 10.0}
+            Joint3: {p: 100.0, i: 0.01, d: 10.0}
+            Joint4: {p: 100.0, i: 0.01, d: 10.0}
+            Joint5: {p: 100.0, i: 0.01, d: 10.0}
+            Joint6: {p: 100.0, i: 0.01, d: 10.0}
 
     # Individual Position Controllers ---------------------------------------
     # Allow to send individual ROS msg of Float64 to each joint
@@ -48,24 +88,5 @@ minibot:
         type: position_controllers/JointPositionController
         joint: Joint6
         pid: {p: 100.0, i: 0.01, d: 10.0}
-
-    # Group Position Controllers --------------------------------------------
-    # Allow to send single ROS msg of Float64MutiArray to all joints
-    joint_position_controller:
-        type: position_controllers/JointGroupPositionController
-        joints:
-            - Joint1
-            - Joint2
-            - Joint3
-            - Joint4
-            - Joint5
-            - Joint6
-        gains:
-            Joint1: {p: 100.0, i: 0.01, d: 10.0}
-            Joint2: {p: 100.0, i: 0.01, d: 10.0}
-            Joint3: {p: 100.0, i: 0.01, d: 10.0}
-            Joint4: {p: 100.0, i: 0.01, d: 10.0}
-            Joint5: {p: 100.0, i: 0.01, d: 10.0}
-            Joint6: {p: 100.0, i: 0.01, d: 10.0}
 
 
