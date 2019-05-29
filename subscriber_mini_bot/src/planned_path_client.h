@@ -39,6 +39,7 @@ typedef int      BOOL_T;
 #define RCSVR_CMD_SET_PARAMETER_ACC ( 0x5 )
 #define RCSVR_CMD_GET_ACTUAL_POS    ( 0x6 )
 #define RCSVR_CMD_SEND_ACTUAL_POS   ( 0x7 )
+#define RCSVR_CMD_MOTION_HALT       ( 0x8 )
 
 //package
 #define MAX_POINT_DATA_SIZE (8)

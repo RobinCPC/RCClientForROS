@@ -1,5 +1,6 @@
 #include "planned_path_client.h"
 #include "std_msgs/Float64MultiArray.h"
+#include <industrial_msgs/StopMotion.h>
 
 
 using namespace std;
@@ -12,6 +13,8 @@ struct sockaddr_in gClientInfo;
 std::mutex gMutex;
 void robotStatePublishWorker(ros::NodeHandle& nh, int rate);
 void jnt_cmd_callback(const std_msgs::Float64MultiArray& msg);
+bool stop_motion_service(industrial_msgs::StopMotion::Request &req,
+                         industrial_msgs::StopMotion::Response &res);
 
 
 void SendMsgs();
@@ -74,6 +77,9 @@ int main( int argc, char **argv )
   }
 
   std::thread robotStatePublishThread(robotStatePublishWorker, std::ref(n), 50);
+
+  ros::ServiceServer stopService = n.advertiseService("stop_motion", stop_motion_service);
+  ROS_INFO_STREAM("Stop motion service On!");
 
   ros::spin();
 
@@ -227,14 +233,17 @@ void robotStatePublishWorker(ros::NodeHandle& nh, int rate)
 
     while(ros::ok())
     {
-        // Critical Section
-        std::lock_guard<std::mutex> mLock(gMutex);
-
         // Ask server to get current joint position
         pkg.cmd = RCSVR_CMD_GET_ACTUAL_POS;
         pkg.pointData.index = 0;
+        I32_T ret = 0;
+        {
+        // Critical Section
+        std::lock_guard<std::mutex> mLock(gMutex);
+
         send( gSockfd, &pkg, sizeof( RCPackage_T), 0);
-        I32_T ret = recv( gSockfd, &pkg, sizeof( RCPackage_T ), 0);
+        ret = recv( gSockfd, &pkg, sizeof( RCPackage_T ), 0);
+        }
 
         if( ret != -1 && pkg.cmd == RCSVR_CMD_SEND_ACTUAL_POS )
         {
@@ -309,3 +318,37 @@ void jnt_cmd_callback(const std_msgs::Float64MultiArray& msg)
   free( pPath );
   return;
 }
+bool stop_motion_service(industrial_msgs::StopMotion::Request &req,
+                         industrial_msgs::StopMotion::Response &res)
+{
+  RCPackage_T  pkg;
+
+  // Send Halt command to Controller
+  pkg.cmd = RCSVR_CMD_MOTION_HALT;
+  pkg.pointData.index = 0;      // May not need
+
+  ROS_INFO( "<------------------- MiniBOT send halt command! ------------------>");
+  I32_T ret = 0;
+  {
+  // Critical Section
+  std::lock_guard<std::mutex> mLock(gMutex);
+
+  send( gSockfd, &pkg, sizeof( RCPackage_T ), 0 );
+  ret = recv( gSockfd, &pkg, sizeof( RCPackage_T ), 0);
+  }
+
+
+  if( ret != -1 && pkg.cmd == RCSVR_CMD_MOTION_HALT )
+  {
+    ROS_INFO("MiniBOT send halt success! ret: %d, cmd %d\n", ret, pkg.cmd);
+    res.code.val = pkg.pointData.index;
+    return true;
+  }
+  else
+  {
+    ROS_INFO("MiniBOT send halt failed! ret: %d, cmd %d\n", ret, pkg.cmd);
+    res.code.val = pkg.pointData.index;
+    return false;
+  }
+}
+

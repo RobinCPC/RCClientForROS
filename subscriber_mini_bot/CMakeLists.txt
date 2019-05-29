@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  industrial_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -191,7 +192,7 @@ install(TARGETS planned_path_client
 # )
 
 ## Mark other folders (e.g. launch and world folder)
-install(DIRECTORY 
+install(DIRECTORY
   config
   launch
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
