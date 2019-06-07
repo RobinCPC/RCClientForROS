@@ -14,6 +14,8 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  sensor_msgs
+  industrial_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -138,6 +140,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/minibot_control_node.cpp)
 add_executable(simple_mover src/simple_mover.cpp)
+add_executable(mqtt_interaction src/mqtt_interaction.cpp src/mqtt_interaction.h)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -151,6 +154,10 @@ add_executable(simple_mover src/simple_mover.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(simple_mover
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(mqtt_interaction
   ${catkin_LIBRARIES}
 )
 
@@ -174,7 +181,7 @@ target_link_libraries(simple_mover
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
-install(TARGETS simple_mover
+install(TARGETS simple_mover mqtt_interaction
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

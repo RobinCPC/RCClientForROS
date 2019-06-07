@@ -1,0 +1,10 @@
+<launch>
+    <!-- launch aws-iot-bridge -->
+    <include file="$(find aws_iot_mqtt_bridge)/launch/aws_iot_bridge.launch">
+    </include>
+
+    <!-- run mqtt_interaction node -->
+    <node name="mqtt_interaction" pkg="minibot_control" type="mqtt_interaction"
+        respawn="false" output="screen">
+    </node>
+</launch>
