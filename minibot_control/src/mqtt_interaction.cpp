@@ -34,6 +34,10 @@ MQTTInteraction::MQTTInteraction(ros::NodeHandle nh)
   ptp_msg.layout.dim[0].stride = 1;
   ptp_msg.layout.dim[0].label = "Joint";
 
+  // Publish total connecting time and state of robot
+  time_pub = nh_.advertise<std_msgs::String>("/mqtt_time", 1);
+  state_pub = nh_.advertise<std_msgs::String>("/mqtt_state", 1);
+
 }
 
 MQTTInteraction::~MQTTInteraction(){}
@@ -43,9 +47,20 @@ void MQTTInteraction::jnt_state_callback(const sensor_msgs::JointState &jnt_msg)
   ros::Duration time_diff = (jnt_msg.header.stamp - update_time);
   if (time_diff.toSec() >= 1.0)
   {
+    std_msgs::String str_msg;
     ROS_DEBUG_STREAM("count in one sec: " << num_count );
+    int cur_time = ros::Time::now().toSec();
+    int hr = (int) cur_time/3600;
+    int mn = (int) cur_time/60;
+    int sc = cur_time % 60;
+    std::string hms = std::to_string(hr) + ":" + std::to_string(mn) + ":"
+      + std::to_string(sc);
+    str_msg.data = hms;
+    time_pub.publish(str_msg);
     update_time = jnt_msg.header.stamp;
+
     num_count = 0;
+    num_mv_jnt = 0;
     for (int i=0; i < jnt_msg.position.size(); ++i)
     {
       double tmp_deg = jnt_msg.position[i] *r2d;
@@ -54,14 +69,25 @@ void MQTTInteraction::jnt_state_callback(const sensor_msgs::JointState &jnt_msg)
       if( fabs(jnt_vals[i] - tmp_deg) > 0.1 )
       {
         jnt_vals[i] = tmp_deg;
+        ++num_mv_jnt;
       }else
       {
         continue;
       }
 
-      std_msgs::String str_msg;
       str_msg.data = std::to_string(jnt_vals[i]);
       jnt_pubs[i].publish(str_msg);
+    }
+
+    if(num_mv_jnt > 0)
+    {
+      str_msg.data = "MOVING";
+      state_pub.publish(str_msg);
+    }
+    else
+    {
+      str_msg.data = "STAND_STILL";
+      state_pub.publish(str_msg);
     }
   }
   else

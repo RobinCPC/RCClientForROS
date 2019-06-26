@@ -32,8 +32,12 @@ private:
   ros::Subscriber motion_sub;
   ros::Publisher jnt_cmd_pub;
 
+  ros::Publisher state_pub;
+  ros::Publisher time_pub;
+
   ros::Time update_time;
   int num_count = 0;
+  int num_mv_jnt = 0;   // check if any joint is moving
   const int num_jnt = 6;
   const double r2d = 57.295779513;
   const double d2r = 0.017453293;
