@@ -185,7 +185,6 @@ include_directories(
 
 ## Mark other folders (e.g. launch and world folder)
 install(DIRECTORY 
-  config
   launch
   meshes
   rviz

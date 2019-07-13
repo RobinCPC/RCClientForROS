@@ -182,7 +182,7 @@ include_directories(
 # )
 
 ## Mark other folders (e.g. launch and world folder)
-install(DIRECTORY launch world
+install(DIRECTORY launch world config
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
