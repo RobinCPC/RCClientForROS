@@ -1,4 +1,14 @@
 <launch>
+  <!-- Using Mqtt to interact with MiniBOT (such as publish robot state
+    to cloud and subscribe motion command from cloud.
+    usage:
+    To interact with Real MiniBOT (Hardware)
+    roslaunch minibot_control mqtt_interact.launch
+    To interact with MiniBOT in Gazebo (simulation)
+    roslaunch minibot_control mqtt_interact.launch is_sim:=true
+  -->
+    <arg name="is_sim" default="false"/>
+
     <!-- launch aws-iot-bridge -->
     <include file="$(find aws_iot_mqtt_bridge)/launch/aws_iot_bridge.launch">
     </include>
@@ -6,5 +16,6 @@
     <!-- run mqtt_interaction node -->
     <node name="mqtt_interaction" pkg="minibot_control" type="mqtt_interaction"
         respawn="false" output="screen">
+        <remap from="/joint_states" to="/minibot/joint_states" if="$(arg is_sim)" />
     </node>
 </launch>

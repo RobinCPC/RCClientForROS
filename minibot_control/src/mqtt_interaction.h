@@ -35,6 +35,7 @@ private:
   ros::Publisher state_pub;
   ros::Publisher time_pub;
 
+  ros::Time start_time;
   ros::Time update_time;
   int num_count = 0;
   int num_mv_jnt = 0;   // check if any joint is moving

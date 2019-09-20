@@ -3,7 +3,8 @@
 MQTTInteraction::MQTTInteraction(ros::NodeHandle nh)
   : nh_(nh)
 {
-  update_time = ros::Time::now();
+  start_time = ros::Time::now();
+  update_time = start_time;
   // Subscribe to joint_states
   jnt_sub = nh_.subscribe("/joint_states", 5,   // only keep newer joint states
       &MQTTInteraction::jnt_state_callback, this);
@@ -49,10 +50,12 @@ void MQTTInteraction::jnt_state_callback(const sensor_msgs::JointState &jnt_msg)
   {
     std_msgs::String str_msg;
     ROS_DEBUG_STREAM("count in one sec: " << num_count );
-    int cur_time = ros::Time::now().toSec();
+    ros::Duration power_on_time = jnt_msg.header.stamp - start_time;
+    double cur_time = power_on_time.toSec();
+    ROS_DEBUG_STREAM("current time" << cur_time );
     int hr = (int) cur_time/3600;
     int mn = (int) cur_time/60;
-    int sc = cur_time % 60;
+    int sc = (int) cur_time % 60;
     std::string hms = std::to_string(hr) + ":" + std::to_string(mn) + ":"
       + std::to_string(sc);
     str_msg.data = hms;
