@@ -10,6 +10,7 @@ add_compile_options(-std=c++11)
 find_package(catkin REQUIRED COMPONENTS
   controller_manager
   joint_state_controller
+  #  joint_trajectory_controller
   robot_state_publisher
   roscpp
   rospy
@@ -140,6 +141,8 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/minibot_control_node.cpp)
 add_executable(simple_mover src/simple_mover.cpp)
+add_executable(simple_traj_control src/simple_traj_control.cpp)
+add_executable(simple_trajectory src/simple_trajectory.cpp)
 add_executable(mqtt_interaction src/mqtt_interaction.cpp src/mqtt_interaction.h)
 
 ## Rename C++ executable without prefix
@@ -154,6 +157,14 @@ add_executable(mqtt_interaction src/mqtt_interaction.cpp src/mqtt_interaction.h)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(simple_mover
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(simple_traj_control
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(simple_trajectory
   ${catkin_LIBRARIES}
 )
 
@@ -181,7 +192,7 @@ target_link_libraries(mqtt_interaction
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
-install(TARGETS simple_mover mqtt_interaction
+install(TARGETS simple_mover simple_traj_control simple_trajectory mqtt_interaction
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

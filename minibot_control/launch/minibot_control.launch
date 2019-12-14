@@ -6,16 +6,17 @@
     <!-- load the controllers -->
     <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
         output="screen" ns="/minibot" args="joint_state_controller
-                                          joint_position_controller
+                                          arm_controller
                                           "/>
     <!--
-                                          arm_controller
+                                          joint_position_controller
                                           joint1_position_controller
                                           joint2_position_controller
                                           joint3_position_controller
                                           joint4_position_controller
                                           joint5_position_controller
                                           joint6_position_controller
+    <node name="simple_mover" pkg="minibot_control" type="simple_mover"/>
     -->
 
     <!-- convert joint states to TF transforms for rviz, etc -->
@@ -25,7 +26,6 @@
     </node>
 
     <!-- experiment to control as group -->
-    <node name="simple_mover" pkg="minibot_control" type="simple_mover"/>
 
 </launch>
 
