@@ -12,6 +12,9 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   industrial_msgs
+  actionlib
+  control_msgs
+  trajectory_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -136,6 +139,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/subscriber_mini_bot_node.cpp)
 add_executable(planned_path_client src/planned_path_client.cpp)
+add_executable(grc_moveit src/grc_moveit.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -152,6 +156,7 @@ add_executable(planned_path_client src/planned_path_client.cpp)
 #   ${catkin_LIBRARIES}
 # )
 target_link_libraries(planned_path_client ${catkin_LIBRARIES} Threads::Threads)
+target_link_libraries(grc_moveit ${catkin_LIBRARIES})
 
 #############
 ## Install ##
@@ -173,7 +178,7 @@ target_link_libraries(planned_path_client ${catkin_LIBRARIES} Threads::Threads)
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
-install(TARGETS planned_path_client
+install(TARGETS planned_path_client grc_moveit
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

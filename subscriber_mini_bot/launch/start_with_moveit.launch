@@ -1,0 +1,54 @@
+<launch>
+  <!-- reference: https://erdalpekel.de/?p=55
+    https://github.com/erdalpekel/panda_simulation/blob/master/launch/simulation.launch
+    Refer to minibot_control/launch/simulate_with_moveit.launch
+  -->
+
+  <!-- Load Configuration file for RC Client -->
+  <rosparam file="$(find subscriber_mini_bot)/config/config.yaml" command="load" />
+
+  <rosparam file="$(find minibot_moveit_config)/config/joint_limits.yaml" command="load"
+      ns="/robot_description_planning"/>
+
+  <!-- Run RC Client -->
+  <node name="planned_path_subscriber" pkg="subscriber_mini_bot" type="planned_path_client" output="screen" >
+    <remap from="/joint_states" to="/minibot/joint_states" />
+  </node>
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" >
+    <remap from="/joint_states" to="/minibot/joint_states" />
+  </node>
+
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="/use_gui" value="false"/>
+    <rosparam param="/source_list">[/minibot/joint_states]</rosparam>
+  </node>
+
+  <!-- Run MoveIt! interact note -->
+  <node name="grc_client_moveit" pkg="subscriber_mini_bot" type="grc_moveit" output="screen" >
+    <remap from="/grc_client_moveit" to="/minibot/arm_controller/follow_joint_trajectory" />
+  </node>
+
+
+  <!-- Load the URDF, SRDF and other .yaml configuration files on the param server -->
+  <include file="$(find minibot_moveit_config)/launch/planning_context.launch">
+    <arg name="load_robot_description" value="true"/>
+  </include>
+
+  <!--
+    # The planning and execution components of MoveIt! configured to
+    # publish the current configuration of the robot (simulated or real)
+    # and the current state of the world as seen by the planner
+  -->
+  <include file="$(find minibot_moveit_config)/launch/move_group.launch">
+    <arg name="publish_monitored_planning_scene" value="true" />
+  </include>
+
+  <!--
+    # The visualization component of MoveIt!
+  -->
+  <include file="$(find minibot_moveit_config)/launch/moveit_rviz.launch">
+    <arg name="config" value="true" />
+  </include>
+
+</launch>

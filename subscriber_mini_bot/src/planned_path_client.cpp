@@ -1,6 +1,7 @@
 #include "planned_path_client.h"
 #include "std_msgs/Float64MultiArray.h"
 #include <industrial_msgs/StopMotion.h>
+#include <trajectory_msgs/JointTrajectory.h>
 
 
 using namespace std;
@@ -13,6 +14,7 @@ struct sockaddr_in gClientInfo;
 std::mutex gMutex;
 void robotStatePublishWorker(ros::NodeHandle& nh, int rate);
 void jnt_cmd_callback(const std_msgs::Float64MultiArray& msg);
+void jnt_path_callback(const trajectory_msgs::JointTrajectoryConstPtr& path_msg);
 bool stop_motion_service(industrial_msgs::StopMotion::Request &req,
                          industrial_msgs::StopMotion::Response &res);
 
@@ -67,7 +69,7 @@ int main( int argc, char **argv )
 
   ros::Subscriber motionReq   = n.subscribe( "/move_group/motion_plan_request", 10000, SubscribeVelAccScale );
 
-  ros::Subscriber plannedPath = n.subscribe( "/move_group/display_planned_path", 10000, SubscribePath );
+  //ros::Subscriber plannedPath = n.subscribe( "/move_group/display_planned_path", 10000, SubscribePath );
 
   ros::Subscriber jntSub;
   if(get_jnt_cmd)
@@ -75,6 +77,8 @@ int main( int argc, char **argv )
     ROS_INFO_STREAM("Start to subscribe joint command!");
     jntSub = n.subscribe( "/minibot/joint_position_controller/command", 5, jnt_cmd_callback);
   }
+
+  ros::Subscriber jntPathSub = n.subscribe("joint_path_command", 1, jnt_path_callback);
 
   std::thread robotStatePublishThread(robotStatePublishWorker, std::ref(n), 50);
 
@@ -289,7 +293,7 @@ void robotStatePublishWorker(ros::NodeHandle& nh, int rate)
 
 void jnt_cmd_callback(const std_msgs::Float64MultiArray& msg)
 {
-  ROS_INFO( "<------------------- MiniBOT Received trajectory command! ------------------>\n");
+  ROS_INFO( "<------------------- MiniBOT Received joint position command! ------------------>\n");
   //ROS_INFO_STREAM("Received msg:" << msg);
 
   ROSData_T *pROSData   = &gROSData;
@@ -305,7 +309,7 @@ void jnt_cmd_callback(const std_msgs::Float64MultiArray& msg)
   pPath = ( ROSPath_T * )malloc( sizeof( ROSPath_T ) * totalPoint );
   for( I32_T pointIndex = 0; pointIndex < totalPoint; pointIndex++ )
   {
-    for(int i = 0; i < msg.layout.dim[0].size; ++i)
+    for(size_t i = 0; i < msg.layout.dim[0].size; ++i)
     {
       pPath[pointIndex].points[i] = msg.data[i];
     }
@@ -318,6 +322,40 @@ void jnt_cmd_callback(const std_msgs::Float64MultiArray& msg)
   free( pPath );
   return;
 }
+
+void jnt_path_callback(const trajectory_msgs::JointTrajectoryConstPtr& path_msg)
+{
+  ROS_INFO( "<------------------- MiniBOT Received joint trajectory command! ------------------>\n");
+  ROS_INFO_STREAM("Received msg: " << path_msg);
+
+  ROSData_T *pROSData   = &gROSData;
+
+  // Setting speed ratio manually
+  pROSData->speedRatio.velRatio = 0.8;
+  pROSData->speedRatio.accRatio = 0.8;
+
+  // Put joint command message into PathData Structure
+  I32_T      totalPoint = path_msg->points.size();
+  pROSData->totalPoint  = totalPoint;
+  ROS_INFO_STREAM("Total points: " << totalPoint);
+  ROSPath_T *pPath;
+  pPath = ( ROSPath_T * )malloc( sizeof( ROSPath_T ) * totalPoint );
+  for( I32_T pointIndex = 0; pointIndex < totalPoint; pointIndex++ )
+  {
+    for(size_t i = 0; i < path_msg->points[pointIndex].positions.size(); ++i)
+    {
+      pPath[pointIndex].points[i] = path_msg->points[pointIndex].positions[i];
+    }
+  }
+
+  pROSData->pPathData = pPath;
+
+  SendMsgs();
+
+  free( pPath );
+  return;
+}
+
 bool stop_motion_service(industrial_msgs::StopMotion::Request &req,
                          industrial_msgs::StopMotion::Response &res)
 {
