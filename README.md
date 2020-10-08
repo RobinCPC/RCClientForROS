@@ -1,6 +1,16 @@
 # RCClientForROS
 MiniBOT Remote Control Client for ROS
 
+## How to build
+``` bash
+# Got to your workspace's src and clone the repo. For instance
+cd $HOME/catkin_ws/src
+git clone https://github.com/RobinCPC/RCClientForROS.git
+# use rosdep install dependent packages
+cd $HOME/catkin_ws/
+rosdep install --from-paths src --ignore-src --rosdistro kinetic # or melodic
+```
+
 ## To simulate MiniBOT in Gazebo, run the following command in order
 ``` bash
 # To display in Gazebo Simulation.
