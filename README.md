@@ -9,6 +9,11 @@ git clone https://github.com/RobinCPC/RCClientForROS.git
 # use rosdep install dependent packages
 cd $HOME/catkin_ws/
 rosdep install --from-paths src --ignore-src --rosdistro kinetic # or melodic
+# use catkin_tools to build packages in RCClientForROS
+cd $HOME/catkin_ws/
+catkin build  # may take a while
+# after buld complete, source the devel folder
+source ./devel/setup.bash  # or setup.zsh if you use zsh
 ```
 
 ## To simulate MiniBOT in Gazebo, run the following command in order
