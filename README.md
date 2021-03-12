@@ -23,6 +23,7 @@ roslaunch minibot_gazebo minibot_world.launch
 # Connect with ros control
 roslaunch minibot_control minibot_control.launch
 ```
+![MiniBOT in Gazebo](./figures/Gazebo_MiniBOT.jpg)
 
 ## To operate real MiniBOT, run the following command in order
 ``` bash
@@ -31,11 +32,13 @@ roslaunch subscriber_mini_bot start_rviz_demo.launch
 # After connecting and homing, ready to send joint command
 rosrun minibot_control simple_mover
 ```
+![MiniBOT in Nexmotion Studio 3DView](./figures/3DView_MiniBOT.jpg)
 
 ## To simulate MiniBOT in Gazebo with Moveit!
 ``` bash
 roslaunch minibot_control simulate_with_moveit.launch
 ```
+![MiniBOT in RViz with Moveit!](./figures/rviz_moveit.jpg)
 
 ### TODO:
 * Check the range and direction of joint (J2 - 5)
